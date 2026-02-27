@@ -1,58 +1,310 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link rel="stylesheet" href="./buisness-src/buisness.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tori's Skin Secret — Sales Journal</title>
+  <meta name="description"
+    content="Daily sales journal for Tori's Skin Secret cosmetics business. Track sales, customers, revenue and profit.">
+  <link rel="stylesheet" href="premium-ui.css">
 </head>
 
-<body class="forexbody">
-    <p class="desktop-only">AVAILABLE FOR DESKTOP ONLY</p>
-    <div class="trading-journal">
-        <h1>Tori's skin secret sales journal</h1>
-        <div class="header">
-            
+<body>
 
-
-
-            <button onclick="forexwinrate()">📊 Growth</button>
-            <button onclick="forexdarkmode()">🌙 Dark Mode</button>
-            <div class="tip-menu">
-                <input type="checkbox" name="" id="tip-toggle">
-                <label for="tip-toggle" class="tip-label">Click me !</label>
-             <div class="tip-paragraph">
-                <p>Happy birthday kiddo,always remember that you have a brother that is proud of you and loves you very much</p>
-             </div>
-            </div>
-
-        </div>
-
-        <div class="balance-container">
-            <input type="text" name="" id="" placeholder="Type-in-capital" class="input-capital">
-            <button class="save-capital" onclick="balance()">Enter</button>
-            <span class="capital-display"></span>
-        </div>
-        <div class="total-profit">
-            <span class="total-p">Total profit :</span>
-            <span class="total-profit-display"></span>
-        </div>
-
-        <div class="stats">
-            <p id="new">New customers: 0</p>
-            <p id="returning">Returning customers: 0</p>
-        </div>
-        <div class="add-input-grid">
-          
-            <input type="date" class="duedate-js" />
-            <button class="add" onclick="forexaddtodo()">Add</button>
-        </div>
-       
-        <div class="js-project-list todotask"></div>
+  <!-- ═══════════════════ HEADER BAR ═══════════════════ -->
+  <header class="app-header" id="appHeader">
+    <div class="header-inner">
+      <h1 class="app-title">✨ Tori's Skin Secret</h1>
+      <div class="header-actions">
+        <button class="btn btn-icon" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <span class="theme-icon" id="themeIcon">🌙</span>
+        </button>
+        <button class="btn btn-sm btn-outline" id="exportCsvBtn">Export CSV</button>
+        <button class="btn btn-sm btn-danger-outline" id="resetAllBtn">Reset All</button>
+      </div>
     </div>
-    <script src="./buisness-src/buisness.js"></script>
+  </header>
 
+  <main class="container">
+
+    <!-- ═══════════════════ SUMMARY CARDS ═══════════════════ -->
+    <section class="summary-section" aria-label="Summary metrics">
+      <!-- Today row -->
+      <div class="summary-row summary-row--today">
+        <h2 class="summary-heading">Today</h2>
+        <div class="summary-cards">
+          <div class="card metric-card">
+            <span class="metric-label">Revenue</span>
+            <span class="metric-value" id="todayRevenue">₦0</span>
+          </div>
+          <div class="card metric-card">
+            <span class="metric-label">Profit</span>
+            <span class="metric-value" id="todayProfit">₦0</span>
+          </div>
+          <div class="card metric-card">
+            <span class="metric-label">New</span>
+            <span class="metric-value" id="todayNew">0</span>
+          </div>
+          <div class="card metric-card">
+            <span class="metric-label">Returning</span>
+            <span class="metric-value" id="todayReturning">0</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Overall / filtered row -->
+      <div class="summary-row">
+        <h2 class="summary-heading">Overall</h2>
+        <div class="summary-cards">
+          <div class="card metric-card metric-card--accent">
+            <span class="metric-label">Total Revenue</span>
+            <span class="metric-value" id="totalRevenue">₦0</span>
+          </div>
+          <div class="card metric-card metric-card--accent">
+            <span class="metric-label">Total Profit</span>
+            <span class="metric-value" id="totalProfit">₦0</span>
+          </div>
+          <div class="card metric-card">
+            <span class="metric-label">New Customers</span>
+            <span class="metric-value" id="totalNew">0</span>
+          </div>
+          <div class="card metric-card">
+            <span class="metric-label">Returning</span>
+            <span class="metric-value" id="totalReturning">0</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ ADD SALE FORM ═══════════════════ -->
+    <section class="card form-section" aria-label="Add a sale">
+      <h2 class="section-title">Add Sale</h2>
+      <form id="saleForm" novalidate>
+        <div class="form-grid">
+          <!-- Date -->
+          <div class="form-group">
+            <label for="saleDate">Date <span class="required">*</span></label>
+            <input type="date" id="saleDate" required>
+            <span class="error-msg" id="saleDateError"></span>
+          </div>
+
+          <!-- Customer type -->
+          <div class="form-group">
+            <label>Customer Type <span class="required">*</span></label>
+            <div class="segmented-control" role="radiogroup" aria-label="Customer type">
+              <input type="radio" name="customerType" id="ctNew" value="new" required>
+              <label for="ctNew" class="seg-option">New</label>
+              <input type="radio" name="customerType" id="ctReturning" value="returning">
+              <label for="ctReturning" class="seg-option">Returning</label>
+            </div>
+            <span class="error-msg" id="customerTypeError"></span>
+          </div>
+
+          <!-- Item name -->
+          <div class="form-group">
+            <label for="itemName">Item / Product <span class="required">*</span></label>
+            <input type="text" id="itemName" placeholder="e.g. Glow Serum" required>
+            <span class="error-msg" id="itemNameError"></span>
+          </div>
+
+          <!-- Quantity -->
+          <div class="form-group">
+            <label for="quantity">Quantity <span class="required">*</span></label>
+            <input type="number" id="quantity" min="1" step="1" placeholder="1" required>
+            <span class="error-msg" id="quantityError"></span>
+          </div>
+
+          <!-- Unit price -->
+          <div class="form-group">
+            <label for="unitPrice">Unit Price (₦) <span class="required">*</span></label>
+            <input type="number" id="unitPrice" min="0" step="0.01" placeholder="0.00" required>
+            <span class="error-msg" id="unitPriceError"></span>
+          </div>
+
+          <!-- Cost per unit (optional) -->
+          <div class="form-group">
+            <label for="costPerUnit">Cost per Unit (₦)</label>
+            <input type="number" id="costPerUnit" min="0" step="0.01" placeholder="Optional">
+          </div>
+
+          <!-- Discount (optional) -->
+          <div class="form-group">
+            <label for="discount">Discount (₦)</label>
+            <input type="number" id="discount" min="0" step="0.01" placeholder="0">
+          </div>
+
+          <!-- Payment method -->
+          <div class="form-group">
+            <label for="paymentMethod">Payment Method <span class="required">*</span></label>
+            <select id="paymentMethod" required>
+              <option value="">Select…</option>
+              <option value="cash">Cash</option>
+              <option value="transfer">Transfer</option>
+              <option value="pos">POS</option>
+              <option value="online">Online</option>
+            </select>
+            <span class="error-msg" id="paymentMethodError"></span>
+          </div>
+
+          <!-- Notes (optional) -->
+          <div class="form-group form-group--full">
+            <label for="notes">Notes</label>
+            <textarea id="notes" rows="2" placeholder="Optional notes…"></textarea>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" id="saleSubmitBtn">Add Sale</button>
+      </form>
+    </section>
+
+    <!-- ═══════════════════ FILTERS ═══════════════════ -->
+    <section class="card filter-section" aria-label="Filter sales">
+      <details id="filterDetails">
+        <summary class="section-title filter-toggle">Filters &amp; Search</summary>
+        <div class="filter-grid">
+          <div class="form-group">
+            <label for="filterDateFrom">From</label>
+            <input type="date" id="filterDateFrom">
+          </div>
+          <div class="form-group">
+            <label for="filterDateTo">To</label>
+            <input type="date" id="filterDateTo">
+          </div>
+          <div class="form-group">
+            <label for="filterCustomerType">Customer</label>
+            <select id="filterCustomerType">
+              <option value="all">All</option>
+              <option value="new">New</option>
+              <option value="returning">Returning</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filterPayment">Payment</label>
+            <select id="filterPayment">
+              <option value="all">All</option>
+              <option value="cash">Cash</option>
+              <option value="transfer">Transfer</option>
+              <option value="pos">POS</option>
+              <option value="online">Online</option>
+            </select>
+          </div>
+          <div class="form-group form-group--full">
+            <label for="filterSearch">Search</label>
+            <input type="text" id="filterSearch" placeholder="Search item name or notes…">
+          </div>
+          <div class="form-group form-group--full">
+            <button type="button" class="btn btn-sm btn-outline" id="clearFiltersBtn">Clear Filters</button>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- ═══════════════════ SALES LIST ═══════════════════ -->
+    <section class="sales-section" aria-label="Sales list">
+      <h2 class="section-title">Sales <span class="sales-count" id="salesCount"></span></h2>
+
+      <!-- Desktop table (hidden on mobile) -->
+      <div class="table-wrap" id="salesTableWrap">
+        <table class="sales-table" id="salesTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Item</th>
+              <th>Type</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Revenue</th>
+              <th>Profit</th>
+              <th>Payment</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="salesTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- Mobile card list (hidden on desktop) -->
+      <div class="sales-cards" id="salesCards"></div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="emptyState" hidden>
+        <p>No sales yet. Add your first sale above! 🎉</p>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ═══════════════════ EDIT MODAL ═══════════════════ -->
+  <div class="modal-overlay" id="editModal" hidden>
+    <div class="modal card">
+      <h2 class="section-title">Edit Sale</h2>
+      <form id="editForm" novalidate>
+        <input type="hidden" id="editId">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="editDate">Date <span class="required">*</span></label>
+            <input type="date" id="editDate" required>
+            <span class="error-msg" id="editDateError"></span>
+          </div>
+          <div class="form-group">
+            <label>Customer Type <span class="required">*</span></label>
+            <div class="segmented-control" role="radiogroup">
+              <input type="radio" name="editCustomerType" id="editCtNew" value="new" required>
+              <label for="editCtNew" class="seg-option">New</label>
+              <input type="radio" name="editCustomerType" id="editCtReturning" value="returning">
+              <label for="editCtReturning" class="seg-option">Returning</label>
+            </div>
+            <span class="error-msg" id="editCustomerTypeError"></span>
+          </div>
+          <div class="form-group">
+            <label for="editItemName">Item <span class="required">*</span></label>
+            <input type="text" id="editItemName" required>
+            <span class="error-msg" id="editItemNameError"></span>
+          </div>
+          <div class="form-group">
+            <label for="editQuantity">Qty <span class="required">*</span></label>
+            <input type="number" id="editQuantity" min="1" step="1" required>
+            <span class="error-msg" id="editQuantityError"></span>
+          </div>
+          <div class="form-group">
+            <label for="editUnitPrice">Price (₦) <span class="required">*</span></label>
+            <input type="number" id="editUnitPrice" min="0" step="0.01" required>
+            <span class="error-msg" id="editUnitPriceError"></span>
+          </div>
+          <div class="form-group">
+            <label for="editCostPerUnit">Cost (₦)</label>
+            <input type="number" id="editCostPerUnit" min="0" step="0.01">
+          </div>
+          <div class="form-group">
+            <label for="editDiscount">Discount (₦)</label>
+            <input type="number" id="editDiscount" min="0" step="0.01">
+          </div>
+          <div class="form-group">
+            <label for="editPaymentMethod">Payment <span class="required">*</span></label>
+            <select id="editPaymentMethod" required>
+              <option value="">Select…</option>
+              <option value="cash">Cash</option>
+              <option value="transfer">Transfer</option>
+              <option value="pos">POS</option>
+              <option value="online">Online</option>
+            </select>
+            <span class="error-msg" id="editPaymentMethodError"></span>
+          </div>
+          <div class="form-group form-group--full">
+            <label for="editNotes">Notes</label>
+            <textarea id="editNotes" rows="2"></textarea>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+          <button type="button" class="btn btn-outline" id="editCancelBtn">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 
 </html>
